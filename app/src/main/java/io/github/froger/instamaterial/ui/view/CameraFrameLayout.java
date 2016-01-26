@@ -6,24 +6,22 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-/**
- * Created by Miroslaw Stanek on 26.12.14.
- */
-public class SquaredFrameLayout extends FrameLayout {
-    public SquaredFrameLayout(Context context) {
+
+public class CameraFrameLayout extends FrameLayout {
+    public CameraFrameLayout(Context context) {
         super(context);
     }
 
-    public SquaredFrameLayout(Context context, AttributeSet attrs) {
+    public CameraFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SquaredFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CameraFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SquaredFrameLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public CameraFrameLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 

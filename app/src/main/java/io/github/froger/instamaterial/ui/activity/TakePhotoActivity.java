@@ -18,7 +18,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -36,15 +35,11 @@ import java.io.File;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import hugo.weaving.DebugLog;
 import io.github.froger.instamaterial.R;
 import io.github.froger.instamaterial.Utils;
 import io.github.froger.instamaterial.ui.adapter.PhotoFiltersAdapter;
 import io.github.froger.instamaterial.ui.view.RevealBackgroundView;
 
-/**
- * Created by Miroslaw Stanek on 08.02.15.
- */
 public class TakePhotoActivity extends BaseActivity implements RevealBackgroundView.OnStateChangeListener,
         CameraHostProvider {
     public static final String ARG_REVEAL_START_LOCATION = "reveal_start_location";
@@ -53,11 +48,10 @@ public class TakePhotoActivity extends BaseActivity implements RevealBackgroundV
     private static final Interpolator DECELERATE_INTERPOLATOR = new DecelerateInterpolator();
     private static final int STATE_TAKE_PHOTO = 0;
     private static final int STATE_SETUP_PHOTO = 1;
+    private static final int STATE_TAKE_VIDEO = 2;
 
     @Bind(R.id.vRevealBackground)
     RevealBackgroundView vRevealBackground;
-    @Bind(R.id.vPhotoRoot)
-    View vTakePhotoRoot;
     @Bind(R.id.vShutter)
     View vShutter;
     @Bind(R.id.ivTakenPhoto)
@@ -113,15 +107,15 @@ public class TakePhotoActivity extends BaseActivity implements RevealBackgroundV
     }
 
     private void setupRevealBackground(Bundle savedInstanceState) {
-        vRevealBackground.setFillPaintColor(0xFF16181a);
-        vRevealBackground.setOnStateChangeListener(this);
+       vRevealBackground.setFillPaintColor(0xFF16181a);
+      vRevealBackground.setOnStateChangeListener(this);
         if (savedInstanceState == null) {
             final int[] startingLocation = getIntent().getIntArrayExtra(ARG_REVEAL_START_LOCATION);
             vRevealBackground.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
-                    vRevealBackground.getViewTreeObserver().removeOnPreDrawListener(this);
-                    vRevealBackground.startFromLocation(startingLocation);
+                   vRevealBackground.getViewTreeObserver().removeOnPreDrawListener(this);
+                   vRevealBackground.startFromLocation(startingLocation);
                     return true;
                 }
             });
@@ -151,6 +145,13 @@ public class TakePhotoActivity extends BaseActivity implements RevealBackgroundV
 
     @OnClick(R.id.btnTakePhoto)
     public void onTakePhotoClick() {
+        btnTakePhoto.setEnabled(false);
+        cameraView.takePicture(true, true);
+        animateShutter();
+    }
+
+    @OnClick(R.id.btnTakeVideo)
+    public void onTakeVideoClick() {
         btnTakePhoto.setEnabled(false);
         cameraView.takePicture(true, true);
         animateShutter();
@@ -188,12 +189,12 @@ public class TakePhotoActivity extends BaseActivity implements RevealBackgroundV
     @Override
     public void onStateChange(int state) {
         if (RevealBackgroundView.STATE_FINISHED == state) {
-            vTakePhotoRoot.setVisibility(View.VISIBLE);
+            cameraView.setVisibility(View.VISIBLE);
             if (pendingIntro) {
                 startIntroAnimation();
             }
         } else {
-            vTakePhotoRoot.setVisibility(View.INVISIBLE);
+            cameraView.setVisibility(View.INVISIBLE);
         }
     }
 

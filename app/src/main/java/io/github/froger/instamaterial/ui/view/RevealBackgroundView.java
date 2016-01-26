@@ -14,9 +14,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 
-/**
- * Created by Miroslaw Stanek on 18.01.15.
- */
+
 public class RevealBackgroundView extends View {
     public static final int STATE_NOT_STARTED = 0;
     public static final int STATE_FILL_STARTED = 1;
@@ -58,14 +56,14 @@ public class RevealBackgroundView extends View {
         init();
     }
 
-    private void init() {
+   private void init() {
         fillPaint = new Paint();
         fillPaint.setStyle(Paint.Style.FILL);
         fillPaint.setColor(Color.WHITE);
     }
 
     public void setFillPaintColor(int color) {
-        fillPaint.setColor(color);
+        //fillPaint.setColor(color);
     }
 
     public void startFromLocation(int[] tapLocationOnScreen) {
