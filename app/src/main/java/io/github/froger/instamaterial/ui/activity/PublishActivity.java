@@ -22,6 +22,12 @@ import hugo.weaving.DebugLog;
 import io.github.froger.instamaterial.R;
 import io.github.froger.instamaterial.Utils;
 import timber.log.Timber;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseImageView;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 /**
  * Created by Miroslaw Stanek on 21.02.15.

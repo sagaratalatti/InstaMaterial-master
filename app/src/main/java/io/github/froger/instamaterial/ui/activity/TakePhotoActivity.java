@@ -18,12 +18,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.commonsware.cwac.camera.CameraHost;
@@ -31,20 +31,21 @@ import com.commonsware.cwac.camera.CameraHostProvider;
 import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.PictureTransaction;
 import com.commonsware.cwac.camera.SimpleCameraHost;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.GetCallback;
 
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import hugo.weaving.DebugLog;
 import io.github.froger.instamaterial.R;
 import io.github.froger.instamaterial.Utils;
 import io.github.froger.instamaterial.ui.adapter.PhotoFiltersAdapter;
 import io.github.froger.instamaterial.ui.view.RevealBackgroundView;
 
-/**
- * Created by Miroslaw Stanek on 08.02.15.
- */
 public class TakePhotoActivity extends BaseActivity implements RevealBackgroundView.OnStateChangeListener,
         CameraHostProvider {
     public static final String ARG_REVEAL_START_LOCATION = "reveal_start_location";
@@ -53,11 +54,10 @@ public class TakePhotoActivity extends BaseActivity implements RevealBackgroundV
     private static final Interpolator DECELERATE_INTERPOLATOR = new DecelerateInterpolator();
     private static final int STATE_TAKE_PHOTO = 0;
     private static final int STATE_SETUP_PHOTO = 1;
+    private static final int STATE_TAKE_VIDEO = 2;
 
     @Bind(R.id.vRevealBackground)
     RevealBackgroundView vRevealBackground;
-    @Bind(R.id.vPhotoRoot)
-    View vTakePhotoRoot;
     @Bind(R.id.vShutter)
     View vShutter;
     @Bind(R.id.ivTakenPhoto)
@@ -188,12 +188,12 @@ public class TakePhotoActivity extends BaseActivity implements RevealBackgroundV
     @Override
     public void onStateChange(int state) {
         if (RevealBackgroundView.STATE_FINISHED == state) {
-            vTakePhotoRoot.setVisibility(View.VISIBLE);
+            cameraView.setVisibility(View.VISIBLE);
             if (pendingIntro) {
                 startIntroAnimation();
             }
         } else {
-            vTakePhotoRoot.setVisibility(View.INVISIBLE);
+            cameraView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -238,15 +238,36 @@ public class TakePhotoActivity extends BaseActivity implements RevealBackgroundV
                 @Override
                 public void run() {
                     showTakenPicture(bitmap);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+                    byte[] image=stream.toByteArray();
+                    // Create the ParseFile
+                    ParseFile file = new ParseFile("androidbegin.png", image);
+                    // Upload the image into Parse Cloud
+                    file.saveInBackground();
+
+                    // Create a New Class called "ImageUpload" in Parse
+                    ParseObject imgupload = new ParseObject("ImageUpload");
+
+                    // Create a column named "ImageName" and set the string
+                    imgupload.put("ImageName", "AndroidBegin Logo");
+
+                    // Create a column named "ImageFile" and insert the image
+                    imgupload.put("ImageFile", file);
+
+                    // Create the class and the columns
+                    imgupload.saveInBackground();
+
+                    // Show a simple toast message
+                    Toast.makeText(TakePhotoActivity.this, "Image Uploaded",
+                            Toast.LENGTH_SHORT).show();
                 }
-            });
+
+                });
+
         }
 
-        @Override
-        public void saveImage(PictureTransaction xact, byte[] image) {
-            super.saveImage(xact, image);
-            photoPath = getPhotoPath();
-        }
+
     }
 
     private void showTakenPicture(Bitmap bitmap) {

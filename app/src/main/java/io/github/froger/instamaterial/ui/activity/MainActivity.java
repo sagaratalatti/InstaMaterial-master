@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -20,6 +22,10 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import butterknife.Bind;
@@ -50,6 +56,8 @@ public class MainActivity extends BaseDrawerActivity implements FeedAdapter.OnFe
     private FeedAdapter feedAdapter;
 
     private boolean pendingIntroAnimation;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
