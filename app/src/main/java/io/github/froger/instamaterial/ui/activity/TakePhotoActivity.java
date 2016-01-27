@@ -113,15 +113,15 @@ public class TakePhotoActivity extends BaseActivity implements RevealBackgroundV
     }
 
     private void setupRevealBackground(Bundle savedInstanceState) {
-        vRevealBackground.setFillPaintColor(0xFF16181a);
-        vRevealBackground.setOnStateChangeListener(this);
+       vRevealBackground.setFillPaintColor(0xFF16181a);
+      vRevealBackground.setOnStateChangeListener(this);
         if (savedInstanceState == null) {
             final int[] startingLocation = getIntent().getIntArrayExtra(ARG_REVEAL_START_LOCATION);
             vRevealBackground.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
-                    vRevealBackground.getViewTreeObserver().removeOnPreDrawListener(this);
-                    vRevealBackground.startFromLocation(startingLocation);
+                   vRevealBackground.getViewTreeObserver().removeOnPreDrawListener(this);
+                   vRevealBackground.startFromLocation(startingLocation);
                     return true;
                 }
             });
@@ -151,6 +151,13 @@ public class TakePhotoActivity extends BaseActivity implements RevealBackgroundV
 
     @OnClick(R.id.btnTakePhoto)
     public void onTakePhotoClick() {
+        btnTakePhoto.setEnabled(false);
+        cameraView.takePicture(true, true);
+        animateShutter();
+    }
+
+    @OnClick(R.id.btnTakeVideo)
+    public void onTakeVideoClick() {
         btnTakePhoto.setEnabled(false);
         cameraView.takePicture(true, true);
         animateShutter();
